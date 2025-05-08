@@ -1,28 +1,37 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
+import { addPatient } from '../services/api';
 
-const AddPatientForm = ({ onAdd }) => {
-  const [form, setForm] = useState({ name: '', age: '', gender: '', doctor: '' });
+const AddPatient = () => {
+  const [form, setForm] = useState({
+    name: '',
+    age: '',
+    gender: '',
+    doctor: ''
+  });
+
+  const handleChange = e => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
 
   const handleSubmit = e => {
     e.preventDefault();
-    onAdd(form);
-    setForm({ name: '', age: '', gender: '', doctor: '' });
+    addPatient(form)
+      .then(() => alert("Patient added successfully!"))
+      .catch(err => console.error("Error adding patient:", err));
   };
 
   return (
-    <form className="container mt-4" onSubmit={handleSubmit}>
-      <h4>Add New Patient</h4>
-      <input className="form-control mb-2" placeholder="Name" value={form.name}
-             onChange={e => setForm({ ...form, name: e.target.value })} required />
-      <input className="form-control mb-2" type="number" placeholder="Age" value={form.age}
-             onChange={e => setForm({ ...form, age: e.target.value })} required />
-      <input className="form-control mb-2" placeholder="Gender" value={form.gender}
-             onChange={e => setForm({ ...form, gender: e.target.value })} required />
-      <input className="form-control mb-2" placeholder="Doctor Assigned" value={form.doctor}
-             onChange={e => setForm({ ...form, doctor: e.target.value })} />
-      <button className="btn btn-primary">Add Patient</button>
-    </form>
+    <div className="container mt-4">
+      <h2>Add Patient</h2>
+      <form onSubmit={handleSubmit}>
+        <div className="mb-3"><input type="text" name="name" value={form.name} onChange={handleChange} className="form-control" placeholder="Name" required /></div>
+        <div className="mb-3"><input type="number" name="age" value={form.age} onChange={handleChange} className="form-control" placeholder="Age" required /></div>
+        <div className="mb-3"><input type="text" name="gender" value={form.gender} onChange={handleChange} className="form-control" placeholder="Gender" required /></div>
+        <div className="mb-3"><input type="text" name="doctor" value={form.doctor} onChange={handleChange} className="form-control" placeholder="Doctor Name" required /></div>
+        <button type="submit" className="btn btn-primary">Add Patient</button>
+      </form>
+    </div>
   );
 };
 
-export default AddPatientForm;
+export default AddPatient;
