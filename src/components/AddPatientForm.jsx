@@ -1,37 +1,66 @@
+// src/components/AddPatientForm.js
 import React, { useState } from 'react';
-import { addPatient } from '../services/api';
 
-const AddPatient = () => {
-  const [form, setForm] = useState({
+const AddPatientForm = ({ onAdd }) => {
+  const [formData, setFormData] = useState({
     name: '',
     age: '',
-    gender: '',
-    doctor: ''
+    gender: ''
   });
 
-  const handleChange = e => {
-    setForm({ ...form, [e.target.name]: e.target.value });
+  const handleChange = (e) => {
+    setFormData((prev) => ({
+      ...prev,
+      [e.target.name]: e.target.value
+    }));
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = (e) => {
     e.preventDefault();
-    addPatient(form)
-      .then(() => alert("Patient added successfully!"))
-      .catch(err => console.error("Error adding patient:", err));
+    onAdd(formData);
+    setFormData({ name: '', age: '', gender: '' });
   };
 
   return (
-    <div className="container mt-4">
-      <h2>Add Patient</h2>
-      <form onSubmit={handleSubmit}>
-        <div className="mb-3"><input type="text" name="name" value={form.name} onChange={handleChange} className="form-control" placeholder="Name" required /></div>
-        <div className="mb-3"><input type="number" name="age" value={form.age} onChange={handleChange} className="form-control" placeholder="Age" required /></div>
-        <div className="mb-3"><input type="text" name="gender" value={form.gender} onChange={handleChange} className="form-control" placeholder="Gender" required /></div>
-        <div className="mb-3"><input type="text" name="doctor" value={form.doctor} onChange={handleChange} className="form-control" placeholder="Doctor Name" required /></div>
-        <button type="submit" className="btn btn-primary">Add Patient</button>
-      </form>
-    </div>
+    <form onSubmit={handleSubmit}>
+      <div className="mb-3">
+        <label>Name</label>
+        <input
+          name="name"
+          value={formData.name}
+          onChange={handleChange}
+          className="form-control"
+          required
+        />
+      </div>
+      <div className="mb-3">
+        <label>Age</label>
+        <input
+          name="age"
+          type="number"
+          value={formData.age}
+          onChange={handleChange}
+          className="form-control"
+          required
+        />
+      </div>
+      <div className="mb-3">
+        <label>Gender</label>
+        <select
+          name="gender"
+          value={formData.gender}
+          onChange={handleChange}
+          className="form-control"
+          required
+        >
+          <option value="">Select</option>
+          <option value="Male">Male</option>
+          <option value="Female">Female</option>
+        </select>
+      </div>
+      <button type="submit" className="btn btn-primary">Add Patient</button>
+    </form>
   );
 };
 
-export default AddPatient;
+export default AddPatientForm;

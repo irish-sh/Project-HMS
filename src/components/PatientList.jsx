@@ -1,32 +1,42 @@
-import React, { useEffect, useState } from 'react';
-import { getAllPatients } from '../services/api';
+// src/components/PatientList.js
+import React, { useEffect, useState } from "react";
+import { API } from "../apiConfig/api";
 
 const PatientList = () => {
   const [patients, setPatients] = useState([]);
 
   useEffect(() => {
-    getAllPatients()
-      .then(res => setPatients(res.data))
-      .catch(err => console.error("Error fetching patients:", err));
+    fetchPatients();
   }, []);
+
+  const fetchPatients = async () => {
+    try {
+      const res = await API.get("/patients");
+      setPatients(res.data);
+    } catch (err) {
+      alert("Failed to fetch patients: " + err.message);
+    }
+  };
 
   return (
     <div className="container mt-4">
-      <h2>Patient List</h2>
-      <table className="table table-striped">
+      <h3>All Patients</h3>
+      <table className="table table-bordered">
         <thead>
           <tr>
-            <th>ID</th><th>Name</th><th>Age</th><th>Gender</th><th>Doctor</th>
+            <th>ID</th>
+            <th>Name</th>
+            <th>Age</th>
+            <th>Gender</th>
           </tr>
         </thead>
         <tbody>
-          {patients.map(p => (
+          {patients.map((p) => (
             <tr key={p.id}>
               <td>{p.id}</td>
               <td>{p.name}</td>
               <td>{p.age}</td>
               <td>{p.gender}</td>
-              <td>{p.doctor}</td>
             </tr>
           ))}
         </tbody>

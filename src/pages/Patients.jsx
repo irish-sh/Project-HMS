@@ -1,13 +1,33 @@
-// pages/Patients.js
-import React, { useState } from 'react';
+// src/pages/Patients.jsx
+import React, { useEffect, useState } from 'react';
 import PatientList from '../components/PatientList';
 import AddPatientForm from '../components/AddPatientForm';
+import { API } from '../apiConfig/api';
 
 const Patients = () => {
   const [patients, setPatients] = useState([]);
 
-  const addPatient = (newPatient) => {
-    setPatients([...patients, { ...newPatient, id: patients.length + 1 }]);
+  useEffect(() => {
+    fetchPatients();
+  }, []);
+
+  const fetchPatients = async () => {
+    try {
+      const res = await API.get('/patients');
+      setPatients(res.data);
+    } catch (err) {
+      console.error('Error fetching patients:', err);
+    }
+  };
+
+  const addPatient = async (newPatient) => {
+    try {
+      const res = await API.post('/patients', newPatient);
+      alert('Patient added successfully!');
+      fetchPatients(); // Refresh list after successful add
+    } catch (err) {
+      alert('Error adding patient: ' + err.message);
+    }
   };
 
   return (
